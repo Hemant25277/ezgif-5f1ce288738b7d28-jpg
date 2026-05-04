@@ -29,7 +29,8 @@ export default function HeroCanvasAnimation() {
   // Subtle anti-gravity float (reduced so canvas stays mostly on-screen)
   const yOffset = useTransform(scrollVelocity, [-1, 0, 1], [8, 0, -8]);
 
-  const frameIndex = useTransform(smoothProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
+  // Frame index is now decoupled from scroll and acts like a video
+  const frameIndexRef = useRef(0);
 
   // ── Text opacity sections ────────────────────────────────────
   // Compressed so they fit into the shorter scroll zone
@@ -87,7 +88,7 @@ export default function HeroCanvasAnimation() {
       canvas.height = vh;
     }
 
-    const idx = Math.max(0, Math.min(Math.round(frameIndex.get()), TOTAL_FRAMES - 1));
+    const idx = Math.max(0, Math.min(Math.floor(frameIndexRef.current), TOTAL_FRAMES - 1));
     const img = imagesRef.current[idx];
     if (!img || !img.complete) return;
 
@@ -98,75 +99,68 @@ export default function HeroCanvasAnimation() {
 
     ctx.clearRect(0, 0, vw, vh);
     ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
-  }, [frameIndex]);
+  }, []);
 
   // ── Wire up canvas on load ───────────────────────────────────
   useEffect(() => {
     if (!imagesLoaded) return;
 
-    // Draw initial frame immediately
-    drawFrame();
-
-    // Re-draw whenever scroll changes
-    const unsubscribe = frameIndex.on('change', () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(drawFrame);
-    });
+    // Play animation automatically like a video
+    const playVideo = () => {
+      // Adjust the 0.5 value to make the video play faster or slower
+      frameIndexRef.current = (frameIndexRef.current + 0.4) % TOTAL_FRAMES;
+      drawFrame();
+      rafRef.current = requestAnimationFrame(playVideo);
+    };
+    
+    rafRef.current = requestAnimationFrame(playVideo);
 
     // Re-draw on resize
     const onResize = () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(drawFrame);
+      // The video loop will naturally re-draw, but this ensures immediate resize response
+      drawFrame();
     };
     window.addEventListener('resize', onResize);
 
     return () => {
-      unsubscribe();
       window.removeEventListener('resize', onResize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [imagesLoaded, drawFrame, frameIndex]);
+  }, [imagesLoaded, drawFrame]);
 
   const scrollToProducts = () =>
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
 
-  // ── Loading Screen ───────────────────────────────────────────
-  if (!imagesLoaded) {
-    return (
-      <div className="fixed inset-0 bg-[#1A0F0A] flex flex-col items-center justify-center z-50">
-        <motion.div
-          animate={{ rotate: [0, 10, -10, 0], y: [0, -8, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="text-5xl mb-6"
-        >
-          ☕
-        </motion.div>
-        <div className="w-64 h-1.5 bg-[#3D2820] rounded-full overflow-hidden mb-4">
-          <motion.div
-            className="h-full bg-gradient-to-r from-[#D4A574] to-[#4F9C8F] rounded-full"
-            initial={{ width: '0%' }}
-            animate={{ width: `${loadProgress}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
-        <p className="text-[#C9B8A0] text-sm tracking-wider">
-          Loading… {Math.round(loadProgress)}%
-        </p>
-      </div>
-    );
-  }
-
   // ── Hero ─────────────────────────────────────────────────────
   return (
-    // ↓ REDUCED from h-[500vh] to h-[220vh] — cuts hero scroll zone by more than half
+    // REDUCED from h-[500vh] to h-[220vh] — cuts hero scroll zone by more than half
     <div ref={containerRef} className="relative h-[220vh]">
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#1A0F0A]">
 
         {/* Canvas — absolutely fills the viewport */}
         <motion.div style={{ y: yOffset }} className="absolute inset-0">
+          {!imagesLoaded && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-[#1A0F0A]">
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0], y: [0, -8, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="text-5xl mb-6"
+              >
+                ☕
+              </motion.div>
+              <div className="w-64 h-1.5 bg-[#3D2820] rounded-full overflow-hidden mb-4">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-[#D4A574] to-[#4F9C8F] rounded-full"
+                  initial={{ width: '0%' }}
+                  animate={{ width: `${loadProgress}%` }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+            </div>
+          )}
           <canvas
             ref={canvasRef}
-            style={{ display: 'block', width: '100vw', height: '100vh' }}
+            style={{ display: 'block', width: '100vw', height: '100vh', opacity: imagesLoaded ? 1 : 0, transition: 'opacity 1s ease' }}
           />
         </motion.div>
 

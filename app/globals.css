@@ -1,9 +1,9 @@
 /* Fonts are loaded via next/font/google in app/layout.tsx */
 /* --font-inter and --font-playfair CSS variables are injected automatically */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 @layer utilities {
   .bg-gradient-radial {

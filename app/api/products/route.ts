@@ -16,6 +16,6 @@ export async function GET(req: NextRequest) {
     count: data.length,
     total: coffeeProducts.length,
     currency: 'INR',
-    categories: ['all', 'hot', 'cold', 'specialty', 'indian'],
+    categories: ['all', 'hot', 'cold', 'specialty', 'indian', 'summer', 'food'],
   });
 }

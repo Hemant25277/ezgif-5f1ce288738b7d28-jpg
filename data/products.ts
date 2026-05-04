@@ -1,4 +1,4 @@
-export type Category = 'all' | 'hot' | 'cold' | 'specialty' | 'indian';
+export type Category = 'all' | 'hot' | 'cold' | 'specialty' | 'indian' | 'summer' | 'food';
 
 export interface CoffeeProduct {
   id: string;
@@ -181,6 +181,77 @@ export const coffeeProducts: CoffeeProduct[] = [
     category: 'indian',
     badge: '🇮🇳 Indian',
   },
+  // ── SUMMER SPECIALS ──────────────────────────────────────────
+  {
+    id: 'mango-dragonfruit-refresher',
+    name: 'Mango Dragonfruit Refresher',
+    description: 'A vibrant, sweet and tropical drink hand-shaken with real diced dragonfruit. The perfect companion for a hot summer day.',
+    price: '₹340',
+    priceValue: 340,
+    rating: 4.9,
+    image: '/coffee/iced-latte.jpg',
+    features: ['Real Fruit', 'Hand-shaken', 'Refreshing'],
+    category: 'summer',
+    badge: 'Summer Only',
+  },
+  {
+    id: 'iced-peach-green-tea',
+    name: 'Iced Peach Green Tea',
+    description: 'Premium green tea expertly shaken with sweet peach notes and poured over ice. Light, fruity, and incredibly thirst-quenching.',
+    price: '₹290',
+    priceValue: 290,
+    rating: 4.7,
+    image: '/coffee/cold-brew.jpg',
+    features: ['Green Tea', 'Peach Syrup', 'Iced'],
+    category: 'summer',
+  },
+  {
+    id: 'strawberry-acai',
+    name: 'Strawberry Açaí Refresher',
+    description: 'Sweet strawberry flavors accented by passion fruit and açaí notes, caffeinated with green coffee extract.',
+    price: '₹360',
+    priceValue: 360,
+    rating: 4.8,
+    image: '/coffee/frappuccino.jpg',
+    features: ['Açaí Notes', 'Real Strawberries', 'Caffeinated'],
+    category: 'summer',
+    badge: 'Popular',
+  },
+  // ── BAKERY & FOOD ────────────────────────────────────────────
+  {
+    id: 'chocolate-chip-cookie',
+    name: 'Artisan Chocolate Chip Cookie',
+    description: 'A massive, gooey chocolate chip cookie with pools of melted Belgian dark chocolate and a sprinkle of sea salt.',
+    price: '₹220',
+    priceValue: 220,
+    rating: 4.9,
+    image: '/coffee/chocolate-chip-cookie.jpg',
+    features: ['Belgian Chocolate', 'Sea Salt', 'Warm'],
+    category: 'food',
+    badge: 'Best Seller',
+  },
+  {
+    id: 'butter-croissant',
+    name: 'Classic Butter Croissant',
+    description: 'Flaky, buttery, and baked fresh daily. The quintessential companion to any hot cup of coffee.',
+    price: '₹250',
+    priceValue: 250,
+    rating: 4.8,
+    image: '/coffee/butter-croissant.jpg',
+    features: ['French Butter', 'Flaky', 'Fresh Baked'],
+    category: 'food',
+  },
+  {
+    id: 'blueberry-muffin',
+    name: 'Blueberry Streusel Muffin',
+    description: 'A tender, moist muffin bursting with juicy blueberries and topped with a crunchy buttery streusel.',
+    price: '₹280',
+    priceValue: 280,
+    rating: 4.7,
+    image: '/coffee/blueberry-muffin.jpg',
+    features: ['Fresh Blueberries', 'Streusel Top', 'Moist'],
+    category: 'food',
+  }
 ];
 
 export type { Category as MenuCategory };
@@ -191,6 +262,8 @@ export const categories: { id: Category; label: string; icon: string }[] = [
   { id: 'cold',      label: 'Cold & Iced', icon: '🧊' },
   { id: 'specialty', label: 'Specialty',   icon: '✨' },
   { id: 'indian',    label: 'Indian',      icon: '🇮🇳' },
+  { id: 'summer',    label: 'Summer Specials', icon: '☀️' },
+  { id: 'food',      label: 'Bakery & Food',   icon: '🥐' },
 ];
 
 export interface FeatureHighlight {

@@ -81,7 +81,7 @@ export default function ProductShowcase() {
         ))}
         <div className="absolute inset-0 flex items-center justify-center">
           <p className="text-[#F5E6D3]/50 text-xs font-['Inter'] tracking-widest uppercase">
-            Fresh Roasted Daily · Sourced from India · 14 Items Available
+            Fresh Roasted Daily · Sourced from India · {products.length || 20} Items Available
           </p>
         </div>
       </motion.div>
@@ -100,7 +100,7 @@ export default function ProductShowcase() {
             Signature Blends
           </h2>
           <p className="text-[#C9B8A0] mt-4 font-['Inter'] max-w-xl mx-auto text-sm">
-            {products.length} handcrafted drinks across 4 categories. All prices in Indian Rupees (₹).
+            {products.length || 20} handcrafted items across {categories.length - 1} categories. All prices in Indian Rupees (₹).
           </p>
         </motion.div>
 
