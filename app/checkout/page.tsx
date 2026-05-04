@@ -20,6 +20,22 @@ const FREE_DELIVERY_THRESHOLD = 500;
 const inputClass =
   'w-full bg-[#2D1810] border border-[#5A4034] rounded-xl px-4 py-3 text-[#F5E6D3] placeholder-[#5A4034] focus:outline-none focus:border-[#4F9C8F] transition-colors text-sm font-[Inter]';
 
+const Field = ({ label, value, onChange, error, placeholder, type = 'text', half = false }: {
+  label: string; value: string; onChange: (val: string) => void; error?: string; placeholder: string; type?: string; half?: boolean;
+}) => (
+  <div className={half ? 'flex-1' : 'w-full'}>
+    <label className="block text-xs text-[#C9B8A0] mb-1.5 uppercase tracking-widest">{label}</label>
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      className={`${inputClass} ${error ? 'border-red-500/70' : ''}`}
+    />
+    {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
+  </div>
+);
+
 export default function CheckoutPage() {
   const router = useRouter();
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -81,21 +97,9 @@ export default function CheckoutPage() {
     }
   };
 
-  const Field = ({ label, name, placeholder, type = 'text', half = false }: {
-    label: string; name: keyof typeof form; placeholder: string; type?: string; half?: boolean;
-  }) => (
-    <div className={half ? 'flex-1' : 'w-full'}>
-      <label className="block text-xs text-[#C9B8A0] mb-1.5 uppercase tracking-widest">{label}</label>
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={form[name]}
-        onChange={e => setForm(f => ({ ...f, [name]: e.target.value }))}
-        className={`${inputClass} ${errors[name] ? 'border-red-500/70' : ''}`}
-      />
-      {errors[name] && <p className="text-red-400 text-xs mt-1">{errors[name]}</p>}
-    </div>
-  );
+  const handleChange = (name: keyof typeof form) => (val: string) => {
+    setForm(f => ({ ...f, [name]: val }));
+  };
 
   // ── Success screen ────────────────────────────────────────────
   if (success) {
@@ -171,14 +175,14 @@ export default function CheckoutPage() {
             </h2>
             <div className="space-y-4">
               <div className="flex gap-4">
-                <Field label="Full Name *" name="name" placeholder="Rahul Sharma" half />
-                <Field label="Phone Number *" name="phone" placeholder="9876543210" type="tel" half />
+                <Field label="Full Name *" value={form.name} onChange={handleChange('name')} error={errors.name} placeholder="Rahul Sharma" half />
+                <Field label="Phone Number *" value={form.phone} onChange={handleChange('phone')} error={errors.phone} placeholder="9876543210" type="tel" half />
               </div>
-              <Field label="Email Address" name="email" placeholder="rahul@example.com" type="email" />
-              <Field label="Full Address *" name="address" placeholder="Flat 4B, Sunshine Apartments, MG Road" />
+              <Field label="Email Address" value={form.email} onChange={handleChange('email')} error={errors.email} placeholder="rahul@example.com" type="email" />
+              <Field label="Full Address *" value={form.address} onChange={handleChange('address')} error={errors.address} placeholder="Flat 4B, Sunshine Apartments, MG Road" />
               <div className="flex gap-4">
-                <Field label="City *" name="city" placeholder="Bengaluru" half />
-                <Field label="PIN Code *" name="pincode" placeholder="560001" half />
+                <Field label="City *" value={form.city} onChange={handleChange('city')} error={errors.city} placeholder="Bengaluru" half />
+                <Field label="PIN Code *" value={form.pincode} onChange={handleChange('pincode')} error={errors.pincode} placeholder="560001" half />
               </div>
             </div>
           </motion.div>
